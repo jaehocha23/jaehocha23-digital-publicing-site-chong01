@@ -1,0 +1,3654 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>청년지원플랫폼 통합 대시보드</title>
+    <!-- Pretendard 폰트 로드 -->
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+    />
+    <!-- Phosphor Icons 로드 -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+      /* --- 공통 변수 및 리셋 --- */
+      :root {
+        --primary-blue: #2563eb; /* 시안의 파란색 (Career) */
+        --primary-purple: #7c3aed; /* 보라색 포인트 (Education) */
+        --primary-gradient-start: #7c3aed;
+        --primary-gradient-end: #2563eb;
+        --bg-light: #f5f7fa; /* 전체 배경색 */
+        --bg-white: #ffffff;
+        --text-dark: #111827; /* 진한 텍스트 */
+        --text-gray: #6b7280; /* 회색 텍스트 */
+        --border-color: #e5e7eb;
+
+        /* 카테고리 색상 */
+        --color-career: var(--primary-blue);
+        --color-education: var(--primary-purple);
+        --color-housing: #10b981; /* Emerald */
+        --color-welfare: #f59e0b; /* Amber */
+        --color-participation: #ef4444; /* Red */
+
+        /* 태그 색상 */
+        --tag-d-day-bg: #fee2e2;
+        --tag-d-day-text: #ef4444;
+        --tag-ing-bg: #dbeafe;
+        --tag-ing-text: #2563eb;
+        --tag-always-bg: #f3f4f6;
+        --tag-always-text: #4b5563;
+        --tag-close-bg: #e5e7eb;
+        --tag-close-text: #9ca3af;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Pretendard", -apple-system, BlinkMacMacSystemFont,
+          system-ui, Roboto, sans-serif;
+      }
+      body {
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        padding: 0;
+      }
+      ul {
+        list-style: none;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+      button {
+        border: none;
+        background: none;
+        cursor: pointer;
+      }
+
+      /* --- Layout & Container --- */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* ================================================= */
+      /* --- Section 1: Header (Hero Banner) Design --- */
+      /* ================================================= */
+      .hero-section {
+        padding: 40px 0 0 0;
+      }
+      .hero-banner {
+        background-color: var(--bg-white);
+        border-radius: 24px;
+        padding: 48px 56px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-image: radial-gradient(
+          circle at 90% 50%,
+          #fdfeff 0%,
+          #ffffff 100%
+        );
+      }
+
+      /* 1. 로고 영역 (공통 사용) */
+      .brand-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 40px;
+      }
+
+      /* CSS로 만든 플랫한 라운드 사각형 아이콘 */
+      .brand-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px; /* 둥근 사각형 */
+        background: linear-gradient(
+          135deg,
+          #a5b4fc 0%,
+          #4f46e5 100%
+        ); /* 그라데이션 유지 */
+        box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3); /* 그림자 유지 */
+        position: relative;
+        overflow: hidden;
+      }
+      /* 기존 아이콘 광택 효과 제거 */
+      .brand-icon::after {
+        content: none;
+      }
+
+      /* 푸터 로고 크기 조정 */
+      .brand-icon.footer-icon-lg {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px; /* 푸터 로고 라운드 사각형 */
+      }
+      /* 푸터 로고 광택 효과 제거 */
+      .brand-icon.footer-icon-lg::after {
+        content: none;
+      }
+
+      /* 그라데이션 텍스트 로고 */
+      .brand-text {
+        font-size: 20px;
+        font-weight: 800;
+        background: linear-gradient(
+          90deg,
+          var(--primary-gradient-start) 0%,
+          var(--primary-gradient-end) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -0.5px;
+      }
+      .brand-text.footer-text-lg {
+        font-size: 24px; /* Larger font for footer logo */
+      }
+
+      /* 2. 메인 텍스트 영역 */
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .hero-subtitle {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-gray);
+      }
+      .hero-title {
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1.3;
+        color: var(--text-dark);
+        letter-spacing: -1px;
+      }
+      .hero-title .highlight {
+        color: var(--primary-blue);
+      }
+
+      /* ================================================= */
+      /* --- Section 2: Policy Dashboard Content --- */
+      /* ================================================= */
+      .dashboard-section {
+        padding: 0 0 40px 0;
+      }
+      .main-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-top: 20px; /* 대시보드 상단 간격 */
+      }
+      .header-title {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .header-title span {
+        color: var(--primary-blue);
+        margin-left: 8px;
+      }
+      .header-actions {
+        display: flex;
+        gap: 12px;
+      }
+      .btn-group {
+        display: flex;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        overflow: hidden;
+        background: var(--bg-white);
+      }
+      .btn-group button {
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--text-gray);
+        transition: 0.2s;
+      }
+      .btn-group button.active {
+        background-color: var(--primary-blue);
+        color: white;
+      }
+      .btn-outline {
+        padding: 8px 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        background: var(--bg-white);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--text-gray);
+      }
+
+      /* Filter Section */
+      .filter-section {
+        background: var(--bg-white);
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+      .filter-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+      .filter-row:last-child {
+        margin-bottom: 0;
+      }
+      .filter-label {
+        width: 80px;
+        min-width: 80px;
+        font-weight: 600;
+        color: var(--text-gray);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+      }
+      .filter-options {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .filter-pill {
+        padding: 6px 16px;
+        border-radius: 20px;
+        background-color: var(--bg-light);
+        color: var(--text-gray);
+        font-size: 14px;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .filter-pill.active {
+        background-color: var(--primary-blue);
+        color: white;
+      }
+
+      /* Category Navigation */
+      .category-nav {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .category-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        min-width: 80px;
+      }
+      .cat-icon-box {
+        width: 56px;
+        height: 56px;
+        background: var(--bg-white);
+        border-radius: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        color: var(--text-gray);
+        transition: all 0.2s;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+      }
+      .category-item.active .cat-icon-box {
+        background: var(--primary-blue);
+        color: white;
+        box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+      }
+      .category-item span {
+        font-size: 14px;
+        color: var(--text-gray);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      .category-item.active span {
+        color: var(--primary-blue);
+        font-weight: 700;
+      }
+
+      /* Main Content Grid Layout */
+      .main-content {
+        display: grid;
+        grid-template-columns: 300px 1fr; /* Default: Sidebar + Content */
+        gap: 24px;
+      }
+
+      /* >>>>>>>>>> 타임라인 활성화 시 레이아웃 변경 CSS <<<<<<<<<< */
+      .dashboard-section.timeline-active .sidebar {
+        display: none; /* 사이드바 숨기기 */
+      }
+
+      .dashboard-section.timeline-active .main-content {
+        grid-template-columns: 1fr; /* 메인 콘텐츠가 전체 너비 차지 */
+      }
+      /* >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
+
+      /* Sidebar Widgets */
+      .sidebar {
+        /* 이 요소의 display는 .main-content에 의해 제어됩니다. */
+      }
+      .widget-card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+      .widget-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .widget-subtitle {
+        font-size: 14px;
+        color: var(--text-gray);
+        margin-bottom: 20px;
+      }
+      .status-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+      .status-row:last-child {
+        border-bottom: none;
+      }
+      .status-label {
+        font-weight: 500;
+        color: var(--text-gray);
+      }
+      .status-label.blue {
+        color: var(--primary-blue);
+      }
+      .status-label.red {
+        color: #ef4444;
+      }
+      .status-count {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .custom-list-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border-color);
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .custom-list-item:hover {
+        background: var(--bg-light);
+      }
+      .custom-list-item:last-child {
+        border-bottom: none;
+      }
+      .list-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .list-text {
+        font-weight: 600;
+      }
+
+      /* Chart (Mockup using CSS) */
+      .chart-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        height: 180px;
+      }
+      .donut-chart {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: conic-gradient(
+          var(--primary-blue) 0% 45%,
+          #e5e7eb 45% 100%
+        );
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .chart-inner {
+        width: 110px;
+        height: 110px;
+        background: var(--bg-white);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .chart-percent {
+        font-size: 28px;
+        font-weight: 800;
+        color: var(--primary-blue);
+      }
+      .chart-label {
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+      .chart-legend {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+      .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      /* Policy Card Design: Enhanced with category background graphics */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+      }
+      .policy-card {
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+        
+        /* 그래픽 효과를 위한 설정 */
+        position: relative;
+        overflow: hidden;
+      }
+      .policy-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* 카드 배경 그래픽 (::before를 사용하여 원형 그라데이션 추가) */
+      .policy-card::before {
+          content: '';
+          position: absolute;
+          top: -40px;
+          right: -40px;
+          width: 150px;
+          height: 150px;
+          border-radius: 50%;
+          opacity: 0.1;
+          transition: all 0.3s;
+          z-index: 1; /* 콘텐츠 뒤에 위치 */
+          pointer-events: none;
+      }
+
+      .policy-card:hover::before {
+          opacity: 0.2;
+          transform: scale(1.1);
+      }
+
+      /* 카테고리별 배경 색상 */
+      .policy-card[data-category="career"]::before {
+          background: radial-gradient(circle at center, var(--color-career) 0%, transparent 70%);
+      }
+      .policy-card[data-category="education"]::before {
+          background: radial-gradient(circle at center, var(--color-education) 0%, transparent 70%);
+      }
+      .policy-card[data-category="housing"]::before {
+          background: radial-gradient(circle at center, var(--color-housing) 0%, transparent 70%);
+      }
+      .policy-card[data-category="welfare"]::before {
+          background: radial-gradient(circle at center, var(--color-welfare) 0%, transparent 70%);
+      }
+      .policy-card[data-category="participation"]::before {
+          background: radial-gradient(circle at center, var(--color-participation) 0%, transparent 70%);
+      }
+      
+      /* 카드 내용이 배경 위에 표시되도록 z-index 설정 */
+      .card-header, .card-icon, .card-title, .card-desc, .card-footer {
+          position: relative;
+          z-index: 2;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+      .tags {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-heart {
+        font-size: 20px;
+        color: var(--border-color);
+        transition: color 0.2s;
+      }
+      .btn-heart.active {
+        color: #ef4444; /* Red for liked */
+      }
+      /* 카테고리별 아이콘 색상 */
+      .card-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 아이콘에 미묘한 그림자 추가 */
+      }
+      .policy-card[data-category="career"] .card-icon i { color: var(--color-career); }
+      .policy-card[data-category="education"] .card-icon i { color: var(--color-education); }
+      .policy-card[data-category="housing"] .card-icon i { color: var(--color-housing); }
+      .policy-card[data-category="welfare"] .card-icon i { color: var(--color-welfare); }
+      .policy-card[data-category="participation"] .card-icon i { color: var(--color-participation); }
+      
+      .card-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+      .card-desc {
+        font-size: 14px;
+        color: var(--text-gray);
+        line-height: 1.6;
+        flex-grow: 1;
+        margin-bottom: 20px;
+      }
+      .card-footer {
+        font-size: 13px;
+        color: #9ca3af;
+      }
+      /* Tag Styles */
+      .tag {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .tag.d-day {
+        background: var(--tag-d-day-bg);
+        color: var(--tag-d-day-text);
+      }
+      .tag.ing {
+        background: var(--tag-ing-bg);
+        color: var(--tag-ing-text);
+      }
+      .tag.always {
+        background: var(--tag-always-bg);
+        color: var(--tag-always-text);
+      }
+      .tag.close {
+        background: var(--tag-close-bg);
+        color: var(--tag-close-text);
+      }
+
+      /* ================================================= */
+      /* --- Section 3: Schedule & Updates Content --- */
+      /* ================================================= */
+
+      /* 최신 정책 업데이트 (가로 스크롤) */
+      .update-section {
+        padding-top: 40px; /* 업데이트 섹션 상단 여백 */
+      }
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 20px;
+        padding: 0 8px;
+      }
+      .title-group h2 {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .title-group h2 i {
+        color: var(--primary-purple);
+      }
+      .title-group p {
+        color: var(--text-gray);
+        font-size: 14px;
+      }
+      .nav-buttons {
+        display: flex;
+        gap: 8px;
+      }
+      .nav-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid var(--border-color);
+        background: var(--bg-white);
+        color: var(--text-gray);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.2s;
+      }
+      .nav-btn:hover {
+        border-color: var(--text-dark);
+        color: var(--text-dark);
+      }
+
+      .horizontal-scroll-wrapper {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+        scroll-behavior: smooth;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .horizontal-scroll-wrapper::-webkit-scrollbar {
+        display: none;
+      }
+
+      .update-card {
+        min-width: 320px;
+        background: var(--bg-white);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+        border: 1px solid transparent;
+        transition: 0.2s;
+        cursor: pointer; /* 클릭 가능하게 cursor 추가 */
+      }
+      .update-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+      .badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .badge.gray {
+        background: #f3f4f6;
+        color: #4b5563;
+      }
+      .badge.blue {
+        background: #eff6ff;
+        color: #2563eb;
+      }
+      .badge.orange {
+        background: #fff7ed;
+        color: #ea580c;
+      }
+
+      .up-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 8px;
+        color: var(--text-dark);
+      }
+      .up-desc {
+        font-size: 14px;
+        color: var(--text-gray);
+        line-height: 1.5;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .up-date {
+        font-size: 13px;
+        color: #9ca3af;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* 주요 일정 (대시보드 스타일) */
+      .schedule-container {
+        background: var(--bg-white);
+        border-radius: 24px;
+        padding: 40px;
+        margin-top: 60px;
+        margin-bottom: 60px; /* 스케줄 하단 여백 추가 */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        display: flex;
+        gap: 60px;
+      }
+      .schedule-info {
+        flex: 0 0 300px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .schedule-label {
+        color: var(--primary-purple);
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .schedule-title {
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1.3;
+        margin-bottom: 16px;
+        color: var(--text-dark);
+      }
+      .schedule-desc {
+        color: var(--text-gray);
+        line-height: 1.6;
+        margin-bottom: 32px;
+      }
+      .btn-schedule {
+        background: linear-gradient(
+          135deg,
+          var(--primary-purple) 0%,
+          var(--primary-blue) 100%
+        );
+        color: white;
+        padding: 14px 24px;
+        border-radius: 30px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        transition: 0.2s;
+        box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+      }
+      .btn-schedule:hover {
+        opacity: 0.9;
+        transform: scale(1.02);
+      }
+      .schedule-list {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .schedule-item {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        border-radius: 16px;
+        background: var(--bg-light);
+        transition: 0.2s;
+        cursor: pointer;
+      }
+      .date-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        margin-right: 24px;
+      }
+      .date-day {
+        font-size: 12px;
+        font-weight: 600;
+        color: #9ca3af;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+      .date-num {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-dark);
+      }
+      .item-content {
+        flex: 1;
+      }
+      .item-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 4px;
+        color: var(--text-dark);
+      }
+      .item-sub {
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+      .item-action {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-gray);
+        border-radius: 50%;
+        background: white;
+      }
+      .schedule-item.active {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        color: white;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+        transform: scale(1.01);
+      }
+      .schedule-item.active .date-day,
+      .schedule-item.active .date-num,
+      .schedule-item.active .item-title,
+      .schedule-item.active .item-sub {
+        color: white;
+      }
+      .schedule-item.active .date-day {
+        opacity: 0.8;
+      }
+      .schedule-item.active .item-sub {
+        opacity: 0.9;
+      }
+      .schedule-item.active .item-action {
+        color: var(--primary-blue);
+        background: white;
+      }
+
+      /* ================================================= */
+      /* --- Timeline View (Roadmap) Styling --- */
+      /* ================================================= */
+      .timeline-view {
+        background: white;
+        border-radius: 16px;
+        border: 0.8px solid #e5e7eb;
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+          0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 24px;
+      }
+
+      .timeline-header {
+        background: rgba(249, 250, 251, 0.5);
+        border-bottom: 0.8px solid #f3f4f6;
+        padding: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 76.8px;
+      }
+
+      .timeline-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1e2939;
+        line-height: 28px;
+      }
+
+      .scroll-hint {
+        background: white;
+        border: 0.8px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 4.8px 8.8px;
+        font-size: 12px;
+        font-weight: bold;
+        color: #6a7282;
+      }
+
+      .timeline-content {
+        padding: 24px;
+        overflow-x: auto;
+      }
+
+      .months-row {
+        height: 44.8px;
+        border-bottom: 0.8px solid #e5e7eb;
+        position: relative;
+        margin-bottom: 16px;
+        min-width: 1036px;
+      }
+
+      .month {
+        position: absolute;
+        top: 3.6px;
+        font-size: 14px;
+        font-weight: bold;
+        color: #99a1af;
+        text-align: center;
+        transform: translateX(-50%);
+      }
+
+      /* Month positions (approximate based on 1036px width for 12 months) */
+      /* Each month block is approx 86px wide. */
+      .month-1 {
+        left: 43px;
+      }
+      .month-2 {
+        left: 129px;
+      }
+      .month-3 {
+        left: 215px;
+      }
+      .month-4 {
+        left: 301px;
+      }
+      .month-5 {
+        left: 387px;
+      }
+      .month-6 {
+        left: 473px;
+      }
+      .month-7 {
+        left: 559px;
+      }
+      .month-8 {
+        left: 645px;
+      }
+      .month-9 {
+        left: 731px;
+      }
+      .month-10 {
+        left: 817px;
+      }
+      .month-11 {
+        left: 903px;
+        background: #eff6ff;
+        color: var(--primary-blue);
+        border-radius: 100px;
+        padding: 2px 12px;
+        width: 45px;
+        transform: translate(-50%, -10%);
+        min-width: 45px;
+      }
+      .month-12 {
+        left: 989px;
+      }
+
+      .current-indicator {
+        position: absolute;
+        left: 900px; /* Mock position for Nov 10th */
+        top: 0;
+        width: 2px;
+        height: 328px;
+        border-left: 2px dashed #bedbff;
+      }
+
+      .programs-container {
+        position: relative;
+        height: 340px;
+        min-width: 1036px;
+        padding-top: 4px;
+      }
+
+      .program {
+        position: absolute;
+        left: 0;
+        border-radius: 10px;
+        height: 32px;
+        width: 100%; /* Full width container for relative bar placement */
+      }
+
+      .program-bar {
+        height: 24px;
+        border-radius: 100px;
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+          0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        margin-top: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        position: absolute; /* Set bar absolutely within program container */
+        top: 0;
+        /* Width and Margin-left are calculated for demonstration */
+      }
+
+      /* Program 1: 인공지능대학원 지원 (Jan - Dec) */
+      .program-1 {
+        top: 0;
+      }
+      .program-1 .program-bar {
+        background: #d0fae5;
+        color: #009966;
+        left: 4px;
+        width: 1028px;
+      }
+
+      /* Program 2: 청년 주택드림 청약통장 (Feb - Dec) */
+      .program-2 {
+        top: 44px;
+      }
+      .program-2 .program-bar {
+        background: #ffedd4;
+        color: #f54900;
+        left: 88px;
+        width: 944px;
+      }
+
+      /* Program 3: 국민취업지원제도 (Jan - Dec) */
+      .program-3 {
+        top: 88px;
+      }
+      .program-3 .program-bar {
+        background: #dbeafe;
+        color: #155dfc;
+        left: 4px;
+        width: 1028px;
+      }
+
+      /* Program 4: 청년도전지원사업 (Mar - Nov) */
+      .program-4 {
+        top: 132px;
+      }
+      .program-4 .program-bar {
+        background: #e0e7ff;
+        color: #4f39f6;
+        left: 174px;
+        width: 730px;
+      }
+
+      /* Program 5: 청년내일저축계좌 (Mar - Mar) */
+      .program-5 {
+        top: 176px;
+      }
+      .program-5 .program-bar {
+        background: #ffe4e6;
+        color: #ec003f;
+        left: 174px; /* Mar start */
+        width: 86px; /* 1 month duration */
+      }
+
+      /* Program 6: K-Digital Training (Jan - Dec) */
+      .program-6 {
+        top: 220px;
+      }
+      .program-6 .program-bar {
+        background: #f3e8ff;
+        color: #9810fa;
+        left: 4px;
+        width: 1028px;
+      }
+
+      /* Program 7: 청년 고용안정 장려금 (Jun - Dec) */
+      .program-7 {
+        top: 264px;
+      }
+      .program-7 .program-bar {
+        background: #cefafe;
+        color: #0092b8;
+        left: 473px;
+        width: 559px;
+      }
+
+      /* Program 8: 청년전용 보증부 월세 대출 (May - Dec) */
+      .program-8 {
+        top: 308px;
+      }
+      .program-8 .program-bar {
+        background: #dff2fe;
+        color: #0084d1;
+        left: 387px;
+        width: 645px;
+      }
+
+      .section-title {
+        font-size: 30px;
+        font-weight: 900;
+        color: #101828;
+        line-height: 36px;
+        letter-spacing: -0.75px;
+        margin-bottom: 4px;
+      }
+
+      .section-description {
+        font-size: 14px;
+        color: #6a7282;
+        line-height: 20px;
+      }
+
+      .month-container {
+        margin-bottom: 48px;
+      }
+
+      .month-title {
+        font-size: 24px;
+        font-weight: 900;
+        color: #101828;
+        line-height: 32px;
+        padding-left: 48px;
+      }
+
+      .timeline-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .timeline-card {
+        background: #f9f9fb;
+        border-radius: 16px;
+        padding: 20.571px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        transition: all 0.2s ease;
+        cursor: pointer; /* 카드 클릭 가능하게 cursor 추가 */
+      }
+
+      .timeline-card:hover {
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .card-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+      }
+
+      .card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+          0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+      }
+
+      .icon-purple {
+        background: #f3e8ff;
+      }
+      .icon-rose {
+        background: #ffe4e6;
+      }
+      .icon-purple2 {
+        background: #f3e8ff;
+      }
+      .icon-indigo {
+        background: #e0e7ff;
+      }
+      .icon-green {
+        /* 교육 색상 */
+        background: #d0fae5;
+      }
+      .icon-teal {
+        /* 교육 색상 */
+        background: #cefafe;
+      }
+      .icon-orange {
+        /* 주거/금융 색상 */
+        background: #ffedd4;
+      }
+      .icon-red {
+        /* 복지 색상 */
+        background: #fee2e2;
+      }
+
+      .card-icon svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .card-content {
+        flex: 1;
+      }
+
+      .card-category {
+        font-size: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 3px;
+      }
+
+      .category-employment {
+        color: #4f39f6;
+      }
+      .category-welfare {
+        color: #ec003f;
+      }
+      .category-education {
+        color: #9810fa;
+      }
+      .category-housing {
+        color: #4f39f6;
+      }
+
+      .card-title {
+        font-size: 18px;
+        font-weight: bold;
+        color: #101828;
+        line-height: 22.5px;
+        margin-bottom: 4px;
+      }
+
+      .card-description {
+        font-size: 14px;
+        color: #6a7282;
+        line-height: 20px;
+      }
+
+      .card-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .card-period {
+        text-align: right;
+      }
+
+      .period-label {
+        font-size: 10px;
+        font-weight: bold;
+        color: #99a1af;
+        text-transform: uppercase;
+        margin-bottom: 0px;
+      }
+
+      .period-date {
+        font-family: "Consolas", monospace;
+        font-size: 12px;
+        font-weight: bold;
+        color: #101828;
+        line-height: 16px;
+        white-space: nowrap;
+      }
+
+      .card-arrow {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+          0px 1px 2px -1px rgba(0, 0, 0, 0.1);
+        flex-shrink: 0;
+      }
+
+      .card-arrow i {
+        color: var(--text-dark);
+      }
+
+      /* --- FOOTER STYLES --- */
+      .main-footer {
+        background-color: var(--bg-white);
+        border-top: 1px solid var(--border-color);
+        margin-top: 60px;
+        padding: 40px 0;
+      }
+      .footer-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      .footer-brand {
+        margin-bottom: 24px;
+      }
+      .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-color);
+      }
+      .copyright {
+        font-size: 14px;
+        color: var(--text-gray);
+      }
+      /* ================================================= */
+      /* --- Responsive --- */
+      /* ================================================= */
+
+      @media (max-width: 1440px) {
+        .container {
+          padding: 0 40px;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .schedule-container {
+          flex-direction: column;
+          gap: 30px;
+          padding: 24px;
+        }
+        .schedule-info {
+          flex: auto;
+          text-align: left;
+        }
+        .btn-schedule {
+          width: 100%;
+          justify-content: center;
+        }
+        .main-content {
+          grid-template-columns: 1fr; /* 모바일에서는 사이드바가 있어도 1열 */
+        }
+        .main-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        .filter-label {
+          min-width: 60px;
+          width: 60px;
+        }
+        .footer-bottom {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 16px;
+        }
+        .month-title {
+          padding-left: 0; /* 모바일에서 월별 타이틀 패딩 제거 */
+        }
+      }
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 20px;
+        }
+
+        .hero-banner {
+          padding: 32px 24px;
+        }
+        .hero-title {
+          font-size: 32px;
+        }
+        .brand-row {
+          margin-bottom: 24px;
+        }
+        /* Timeline adjustment for mobile */
+        .timeline-header {
+          flex-direction: column;
+          align-items: flex-start;
+          height: auto;
+          gap: 8px;
+        }
+
+        .section-title {
+          font-size: 24px;
+        }
+
+        .month-title {
+          font-size: 20px;
+        }
+
+        .timeline-card {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 16px;
+        }
+
+        .card-left {
+          width: 100%;
+        }
+
+        .card-right {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .card-period {
+          text-align: left;
+        }
+      }
+      /* === 모달 스타일 === */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s, visibility 0.3s;
+      }
+      .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        width: 90%;
+        max-width: 550px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(20px);
+        transition: transform 0.3s;
+      }
+      .modal-overlay.active .modal-content {
+        transform: translateY(0);
+      }
+      .modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--border-color);
+        background-color: var(--bg-light);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+      }
+      .modal-title {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .modal-tags .tag {
+        margin-right: 8px;
+      }
+      .modal-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      .modal-item {
+        display: flex;
+        gap: 15px;
+        align-items: flex-start;
+      }
+      .modal-icon-box {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        color: white;
+        font-size: 18px;
+      }
+      .modal-icon-box.blue {
+        background-color: var(--primary-blue);
+      }
+      .modal-icon-box.purple {
+        background-color: var(--primary-purple);
+      }
+      .modal-icon-box.orange {
+        background-color: #f97316;
+      }
+      .modal-item-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 4px;
+      }
+      .modal-item-value {
+        font-size: 14px;
+        color: var(--text-gray);
+        line-height: 1.5;
+        white-space: pre-wrap; /* 줄바꿈 유지 */
+      }
+      .modal-footer {
+        padding: 16px 24px;
+        border-top: 1px solid var(--border-color);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+      .modal-footer button {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .btn-close-modal {
+        background: var(--bg-light);
+        color: var(--text-dark);
+      }
+      .btn-close-modal:hover {
+        background: #e5e7eb;
+      }
+      .btn-detail-link {
+        background: var(--primary-blue);
+        color: white;
+      }
+      .btn-detail-link:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ================================================= -->
+      <!-- SECTION 1: HEADER / HERO BANNER -->
+      <!-- ================================================= -->
+      <section class="hero-section">
+        <header class="hero-banner">
+          <div class="brand-row">
+            <div class="brand-icon"></div>
+            <span class="brand-text">청년지원플랫폼</span>
+          </div>
+
+          <div class="hero-content">
+            <p class="hero-subtitle">2025 청년정책</p>
+            <h1 class="hero-title">
+              지금 신청 가능한<br />
+              <span class="highlight">맞춤 정책</span>을 확인하세요.
+            </h1>
+          </div>
+        </header>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- SECTION 2: 최신 정책 업데이트 (MOVED UP) -->
+      <!-- ================================================= -->
+      <section class="update-section">
+        <div class="section-header">
+          <div class="title-group">
+            <h2><i class="ph ph-bell-ringing"></i> 최신 정책 업데이트</h2>
+            <p>놓치면 안 될 주요 청년 정책 소식을 확인하세요.</p>
+          </div>
+          <div class="nav-buttons">
+            <button class="nav-btn" onclick="scrollCards('left')">
+              <i class="ph ph-caret-left"></i>
+            </button>
+            <button class="nav-btn" onclick="scrollCards('right')">
+              <i class="ph ph-caret-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="horizontal-scroll-wrapper" id="cardScroll">
+          <!-- 최신 정책 업데이트 카드 6개 (랜덤 샘플) -->
+          <!-- data-id="5" 추가 -->
+          <article class="update-card" data-id="5">
+            <div class="card-top">
+              <span class="badge gray">금융</span>
+              <span class="badge blue">상시모집</span>
+            </div>
+            <h3 class="up-title">창업준비자금 (근로자생활안정자금)</h3>
+            <p class="up-desc">
+              창업 등 근로자 생활안정자금 융자 지원 (최대 2,000만원), 이율 연
+              1.5%.
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-01-01 ~ 2025-12-31
+            </div>
+          </article>
+
+          <!-- data-id="7" 추가 -->
+          <article class="update-card" data-id="7">
+            <div class="card-top">
+              <span class="badge orange">주거</span>
+              <span class="badge blue">상시모집</span>
+            </div>
+            <h3 class="up-title">청년 우대형 주택청약종합저축</h3>
+            <p class="up-desc">
+              주택 구입 및 전월세 보증금 마련 지원, 비과세 혜택 제공.
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-01-01 ~ 2025-12-31
+            </div>
+          </article>
+
+          <!-- data-id="2" 추가 -->
+          <article class="update-card" data-id="2">
+            <div class="card-top">
+              <span
+                class="badge blue"
+                style="background: #e0e7ff; color: #4338ca"
+                >교육</span
+              >
+              <span class="badge blue">상시모집</span>
+            </div>
+            <h3 class="up-title">정보보호 특성화 대학 지원</h3>
+            <p class="up-desc">
+              디지털 전환 대비, 우리지역 AI 기반 정보보호 인재 양성 지원.
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-01-01 ~ 2028-12-31
+            </div>
+          </article>
+
+          <!-- data-id="11" 추가 -->
+          <article class="update-card" data-id="11">
+            <div class="card-top">
+              <span
+                class="badge blue"
+                style="background: #dbeafe; color: #2563eb"
+                >복지</span
+              >
+              <span class="badge red">마감임박 (D-30)</span>
+            </div>
+            <h3 class="up-title">청년내일저축계좌</h3>
+            <p class="up-desc">
+              기준 중위소득 100% 이하 청년 대상, 근로소득 장려금 지원 (최대
+              1,440만원).
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-03-01 ~ 2025-03-31
+            </div>
+          </article>
+
+          <!-- data-id="6" 추가 -->
+          <article class="update-card" data-id="6">
+            <div class="card-top">
+              <span class="badge gray">취업/일자리</span>
+              <span class="badge blue">상시모집</span>
+            </div>
+            <h3 class="up-title">2025년 청년간호사 근속장려금 지원</h3>
+            <p class="up-desc">
+              3년 또는 5년 만기 적립 시, 최대 2,520만원 또는 5,400만원 적립
+              지원.
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-01-01 ~ 2025-12-31
+            </div>
+          </article>
+
+          <!-- data-id="13" 추가 -->
+          <article class="update-card" data-id="13">
+            <div class="card-top">
+              <span class="badge orange">주거/금융</span>
+              <span class="badge blue">상시모집</span>
+            </div>
+            <h3 class="up-title">청년전용 보증부 월세 대출</h3>
+            <p class="up-desc">
+              보증금 최대 4,500만원, 월세금 최대 1,200만원 대출 지원.
+            </p>
+            <div class="up-date">
+              <i class="ph ph-calendar-blank"></i> 2025-05-01 ~ 2025-12-31
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- SECTION 3: POLICY DASHBOARD (FILTERS/GRID/TIMELINE) -->
+      <!-- ================================================= -->
+      <section class="dashboard-section" id="dashboardSection">
+        <header class="main-header">
+          <div class="header-title">
+            전체 정책 <span id="policyCount">16건</span>
+          </div>
+          <div class="header-actions">
+            <div class="btn-group" id="viewToggleButtons">
+              <button class="active" data-view="grid">
+                <i class="ph ph-squares-four"></i> 그리드
+              </button>
+              <button data-view="timeline">
+                <i class="ph ph-chart-line-up"></i> 타임라인
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 필터 섹션: 타임라인 뷰에서 숨겨집니다. -->
+        <section class="filter-section">
+          <!-- 연도 필터: data-filter 추가 -->
+          <div class="filter-row" data-filter-group="year">
+            <div class="filter-label"><i class="ph ph-calendar"></i> 연도</div>
+            <div class="filter-options">
+              <button class="filter-pill active" data-filter="2025">
+                2025년
+              </button>
+              <button class="filter-pill" data-filter="2026">2026년</button>
+            </div>
+          </div>
+          <!-- 상태 필터: data-filter 추가 -->
+          <div class="filter-row" data-filter-group="status">
+            <div class="filter-label"><i class="ph ph-user"></i> 상태</div>
+            <div class="filter-options">
+              <button class="filter-pill active" data-filter="all">전체</button>
+              <button class="filter-pill" data-filter="student">대학생</button>
+              <button class="filter-pill" data-filter="rest">
+                휴학생/기타
+              </button>
+              <button class="filter-pill" data-filter="graduate-pending">
+                졸업예정
+              </button>
+              <button class="filter-pill" data-filter="job-seeker">
+                취준생
+              </button>
+            </div>
+          </div>
+          <!-- 기간 필터: data-filter 추가 -->
+          <div class="filter-row" data-filter-group="duration">
+            <div class="filter-label"><i class="ph ph-clock"></i> 기간</div>
+            <div class="filter-options">
+              <button class="filter-pill active" data-filter="all">전체</button>
+              <button class="filter-pill" data-filter="always">
+                지금 당장(상시)
+              </button>
+              <button class="filter-pill" data-filter="limited">
+                다음 달(기간 한정)
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 카테고리 네비게이션: 타임라인 뷰에서 숨겨집니다. -->
+        <nav class="category-nav">
+          <div class="category-item active" data-category="all">
+            <div class="cat-icon-box"><i class="ph ph-squares-four"></i></div>
+            <span>전체</span>
+          </div>
+          <div class="category-item" data-category="career">
+            <div class="cat-icon-box"><i class="ph ph-briefcase"></i></div>
+            <span>취업/진로</span>
+          </div>
+          <div class="category-item" data-category="education">
+            <div class="cat-icon-box"><i class="ph ph-graduation-cap"></i></div>
+            <span>교육/장학</span>
+          </div>
+          <div class="category-item" data-category="housing">
+            <div class="cat-icon-box"><i class="ph ph-house-line"></i></div>
+            <span>주거/금융</span>
+          </div>
+          <div class="category-item" data-category="welfare">
+            <div class="cat-icon-box"><i class="ph ph-heart"></i></div>
+            <span>생활/복지</span>
+          </div>
+          <div class="category-item" data-category="participation">
+            <div class="cat-icon-box"><i class="ph ph-globe"></i></div>
+            <span>참여/권리</span>
+          </div>
+        </nav>
+
+        <main class="main-content">
+          <!-- sidebar: 타임라인 뷰에서 dashboard-section.timeline-active 에 의해 display: none 됩니다. -->
+          <aside class="sidebar">
+            <div class="widget-card">
+              <div class="widget-title">
+                <i class="ph ph-chart-bar"></i> 정책 현황
+              </div>
+              <div class="widget-subtitle">2025년 기준</div>
+              <div class="status-row">
+                <span class="status-label">총 정책 수</span>
+                <span class="status-count">50</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label blue">현재 접수 중</span>
+                <span class="status-count blue">50</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label red">마감 임박</span>
+                <span class="status-count red">0</span>
+              </div>
+            </div>
+
+            <div class="widget-card">
+              <div class="widget-title">
+                <i class="ph ph-gift"></i> 맞춤 지원사업
+              </div>
+              <div style="height: 16px"></div>
+              <ul>
+                <li class="custom-list-item">
+                  <div class="list-content">
+                    <span class="tag d-day">D-Day</span>
+                    <span class="list-text">청년 월세 특별지원 2차</span>
+                  </div>
+                  <i
+                    class="ph ph-caret-right"
+                    style="color: var(--text-gray)"
+                  ></i>
+                </li>
+                <li class="custom-list-item">
+                  <div class="list-content">
+                    <span
+                      class="tag d-day"
+                      style="background: #dbeafe; color: #2563eb"
+                      >D-12</span
+                    >
+                    <span class="list-text">미래내일 일경험 사업</span>
+                  </div>
+                  <i
+                    class="ph ph-caret-right"
+                    style="color: var(--text-gray)"
+                  ></i>
+                </li>
+                <li class="custom-list-item">
+                  <div class="list-content">
+                    <span
+                      class="tag d-day"
+                      style="background: #f3f4f6; color: #4b5563"
+                      >D-5</span
+                    >
+                    <span class="list-text">예비창업패키지</span>
+                  </div>
+                  <i
+                    class="ph ph-caret-right"
+                    style="color: var(--text-gray)"
+                  ></i>
+                </li>
+                <li class="custom-list-item">
+                  <div class="list-content">
+                    <span class="tag always">상시</span>
+                    <span class="list-text">햇살론 유스</span>
+                  </div>
+                  <i
+                    class="ph ph-caret-right"
+                    style="color: var(--text-gray)"
+                  ></i>
+                </li>
+              </ul>
+            </div>
+
+            <div class="widget-card">
+              <div class="widget-title">
+                <i class="ph ph-chart-pie"></i> 관심도 분석
+              </div>
+              <div style="height: 24px"></div>
+              <div class="chart-container">
+                <div class="donut-chart">
+                  <div class="chart-inner">
+                    <span class="chart-percent">45%</span>
+                    <span class="chart-label">취업/창업</span>
+                  </div>
+                </div>
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div
+                    class="legend-dot"
+                    style="background: var(--primary-blue)"
+                  ></div>
+                  취업
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background: #10b981"></div>
+                  주거
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background: #f59e0b"></div>
+                  금융
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <section id="policy-view-area">
+            <!-- 그리드 뷰 (기본 활성화) -->
+            <section class="card-grid" id="gridView" data-view="grid">
+              <!-- === CSV 데이터 기반 정책 카드 16개 === -->
+
+              <!-- [1] 인공지능대학원 지원 (교육, 상시) -->
+              <article
+                class="policy-card"
+                data-id="1"
+                data-category="education"
+                data-year="2025"
+                data-status="student"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon">
+                  <i class="ph ph-graduation-cap"></i>
+                </div>
+                <h3 class="card-title">인공지능대학원 지원</h3>
+                <p class="card-desc">
+                  AI 분야 석/박사급 고급 인재 양성을 위한 대학원 운영 지원
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2028.12.31 (상시)</div>
+              </article>
+
+              <!-- [2] 정보보호 특성화 대학 지원 (교육, 상시) -->
+              <article
+                class="policy-card"
+                data-id="2"
+                data-category="education"
+                data-year="2025"
+                data-status="student"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-laptop"></i></div>
+                <h3 class="card-title">정보보호 특성화 대학 지원</h3>
+                <p class="card-desc">
+                  디지털 전환 대비, 우리 지역 AI 기반 정보보호 인재 양성 지원
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2028.12.31 (상시)</div>
+              </article>
+
+              <!-- [3] 청년 1인가구 사회적관계망 형성지원 (복지, 상시) -->
+              <article
+                class="policy-card"
+                data-id="3"
+                data-category="welfare"
+                data-year="2025"
+                data-status="all"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-users"></i></div>
+                <h3 class="card-title">청년 1인가구 사회적관계망 형성지원</h3>
+                <p class="card-desc">
+                  가족센터를 중심으로 청년 1인가구의 고독, 고립 등 방지를 위한
+                  사회적 관계망 지원
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31 (상시)</div>
+              </article>
+
+              <!-- [4] 학교 밖 청소년 온라인 지원 강화 (복지, 상시) -->
+              <article
+                class="policy-card"
+                data-id="4"
+                data-category="welfare"
+                data-year="2025"
+                data-status="rest"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-devices"></i></div>
+                <h3 class="card-title">학교 밖 청소년 온라인 지원 강화</h3>
+                <p class="card-desc">
+                  학교 밖 청소년 대상 온라인 콘텐츠 및 프로그램 개발 및 보급
+                  지원
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31 (상시)</div>
+              </article>
+
+              <!-- [5] 창업준비자금 (근로자생활안정자금) (주거/금융, 상시) -->
+              <article
+                class="policy-card"
+                data-id="5"
+                data-category="housing"
+                data-year="2025"
+                data-status="all"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-lightbulb"></i></div>
+                <h3 class="card-title">창업준비자금 (근로자생활안정자금)</h3>
+                <p class="card-desc">
+                  창업 등 근로자 생활안정자금 융자 지원 (최대 2,000만원)
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31 (상시)</div>
+              </article>
+
+              <!-- [6] 2025년 청년간호사 근속장려금 지원 (취업, 상시) -->
+              <article
+                class="policy-card"
+                data-id="6"
+                data-category="career"
+                data-year="2025"
+                data-status="all"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-first-aid-kit"></i></div>
+                <h3 class="card-title">2025년 청년간호사 근속장려금 지원</h3>
+                <p class="card-desc">
+                  지역 의료기관 재직 간호사 대상 근속 장려금 및 적립 지원 (최대
+                  5,400만원)
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31 (상시)</div>
+              </article>
+
+              <!-- [7] 청년 우대형 주택청약종합저축 (주거/금융, 상시) -->
+              <article
+                class="policy-card"
+                data-id="7"
+                data-category="housing"
+                data-year="2025"
+                data-status="all"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-house-line"></i></div>
+                <h3 class="card-title">청년 우대형 주택청약종합저축</h3>
+                <p class="card-desc">
+                  주택 구입 및 전월세 보증금 마련 지원, 비과세 혜택 제공.
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31 (상시)</div>
+              </article>
+
+              <!-- [8] K-Digital Training (교육, 상시) -->
+              <article
+                class="policy-card"
+                data-id="8"
+                data-category="education"
+                data-year="2025"
+                data-status="all"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">상시</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-desktop"></i></div>
+                <h3 class="card-title">K-Digital Training</h3>
+                <p class="card-desc">
+                  디지털 신기술 핵심 실무 인재 양성 훈련 (전액 국비지원)
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [9] 국민취업지원제도 (취업, 상시) -->
+              <article
+                class="policy-card"
+                data-id="9"
+                data-category="career"
+                data-year="2025"
+                data-status="job-seeker"
+                data-duration="always"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag always">상시</span>
+                    <span class="tag ing">모집중</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-briefcase"></i></div>
+                <h3 class="card-title">국민취업지원제도</h3>
+                <p class="card-desc">
+                  취업을 원하는 청년에게 취업지원서비스와 생계지원을 제공
+                </p>
+                <div class="card-footer">2025.01.01 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [10] 청년 주거급여 수급자 자립지원금 (복지, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="10"
+                data-category="welfare"
+                data-year="2025"
+                data-status="all"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag ing">모집중</span>
+                    <span class="tag d-day">D-45</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-credit-card"></i></div>
+                <h3 class="card-title">청년 주거급여 수급자 자립지원금</h3>
+                <p class="card-desc">
+                  만 19세~30세 미혼 청년 주거급여 수급자에게 별도 지원금 지급
+                </p>
+                <div class="card-footer">2025.02.10 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [11] 청년내일저축계좌 (복지, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="11"
+                data-category="welfare"
+                data-year="2025"
+                data-status="all"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag ing">모집중</span>
+                    <span class="tag d-day">D-30</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-piggy-bank"></i></div>
+                <h3 class="card-title">청년내일저축계좌</h3>
+                <p class="card-desc">
+                  기준 중위소득 100% 이하 청년 대상, 근로소득 장려금 지원 (최대
+                  1,440만원).
+                </p>
+                <div class="card-footer">2025.03.01 ~ 2025.03.31</div>
+              </article>
+
+              <!-- [12] 주거안정 월세 대출 (주거/금융, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="12"
+                data-category="housing"
+                data-year="2025"
+                data-status="all"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag ing">모집중</span>
+                    <span class="tag d-day">D-90</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-money"></i></div>
+                <h3 class="card-title">주거안정 월세 대출</h3>
+                <p class="card-desc">
+                  주거 안정을 위한 월세 자금 대출 지원 (최대 1,200만원)
+                </p>
+                <div class="card-footer">2025.04.01 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [13] 청년전용 보증부 월세 대출 (주거/금융, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="13"
+                data-category="housing"
+                data-year="2025"
+                data-status="all"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag ing">모집중</span>
+                    <span class="tag d-day">D-120</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-key"></i></div>
+                <h3 class="card-title">청년전용 보증부 월세 대출</h3>
+                <p class="card-desc">
+                  보증금 최대 4,500만원, 월세금 최대 1,200만원 대출 지원.
+                </p>
+                <div class="card-footer">2025.05.01 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [14] 청년 고용안정 장려금 지원 (취업, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="14"
+                data-category="career"
+                data-year="2025"
+                data-status="all"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag ing">모집중</span>
+                    <span class="tag d-day">D-150</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-chart-line-up"></i></div>
+                <h3 class="card-title">청년 고용안정 장려금 지원</h3>
+                <p class="card-desc">
+                  중소·중견 기업에서 정규직으로 채용된 청년에게 최대 3년간
+                  지원금 지급.
+                </p>
+                <div class="card-footer">2025.06.01 ~ 2025.12.31</div>
+              </article>
+
+              <!-- [15] 청년도전지원사업 (취업, 기간 한정) - 기존 데이터 유지 -->
+              <article
+                class="policy-card"
+                data-id="15"
+                data-category="career"
+                data-year="2025"
+                data-status="job-seeker"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag d-day">D-3</span>
+                    <span
+                      class="tag ing"
+                      style="background: #fee2e2; color: #ef4444"
+                      >마감임박</span
+                    >
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-trend-up"></i></div>
+                <h3 class="card-title">청년도전지원사업</h3>
+                <p class="card-desc">
+                  구직단념 청년들의 구직 의욕 고취 및 자신감 강화 지원
+                </p>
+                <div class="card-footer">2025.03.01 ~ 2025.11.30</div>
+              </article>
+
+              <!-- [16] ICT 학점연계 인턴십 (교육/취업, 기간 한정) -->
+              <article
+                class="policy-card"
+                data-id="16"
+                data-category="education"
+                data-year="2025"
+                data-status="student"
+                data-duration="limited"
+              >
+                <div class="card-header">
+                  <div class="tags">
+                    <span class="tag close">마감</span>
+                    <span class="tag ing">종료</span>
+                  </div>
+                  <button class="btn-heart">
+                    <i class="ph ph-heart-straight"></i>
+                  </button>
+                </div>
+                <div class="card-icon"><i class="ph ph-book-open"></i></div>
+                <h3 class="card-title">ICT 학점연계 인턴십</h3>
+                <p class="card-desc">
+                  ICT 기업 인턴십 및 학점 인정 (상반기 1~2월 모집)
+                </p>
+                <div class="card-footer">2025.01.15 ~ 2025.02.28</div>
+              </article>
+            </section>
+
+            <!-- 타임라인 뷰 -->
+            <section
+              class="timeline-view"
+              id="timelineView"
+              data-view="timeline"
+              style="display: none"
+            >
+              <div class="timeline-header">
+                <h2 class="timeline-title">2025년 연간 로드맵</h2>
+                <div class="scroll-hint">좌우로 스크롤하여 확인하세요 👋</div>
+              </div>
+
+              <!-- 프로그램 타임라인 (가로 스크롤 섹션) - 임의의 위치 및 기간 설정 유지 -->
+              <div class="timeline-content">
+                <!-- 월별 표시 -->
+                <div class="months-row">
+                  <div class="month month-1">1월</div>
+                  <div class="month month-2">2월</div>
+                  <div class="month month-3">3월</div>
+                  <div class="month month-4">4월</div>
+                  <div class="month month-5">5월</div>
+                  <div class="month month-6">6월</div>
+                  <div class="month month-7">7월</div>
+                  <div class="month month-8">8월</div>
+                  <div class="month month-9">9월</div>
+                  <div class="month month-10">10월</div>
+                  <div class="month month-11">11월</div>
+                  <div class="month month-12">12월</div>
+                </div>
+
+                <div class="programs-container">
+                  <!-- 로드맵 바는 8개만 유지 (시각적 일관성) -->
+                  <!-- 현재 월 표시선 (11월 위치) -->
+                  <div class="current-indicator"></div>
+
+                  <div class="program program-1">
+                    <div class="program-bar">인공지능대학원 지원</div>
+                  </div>
+                  <div class="program program-2">
+                    <div class="program-bar">청년 주택드림 청약통장</div>
+                  </div>
+                  <div class="program program-3">
+                    <div class="program-bar">국민취업지원제도</div>
+                  </div>
+                  <div class="program program-4">
+                    <div class="program-bar">청년도전지원사업</div>
+                  </div>
+                  <div class="program program-5">
+                    <div class="program-bar">청년내일저축계좌 (3월)</div>
+                  </div>
+                  <div class="program program-6">
+                    <div class="program-bar">K-Digital Training</div>
+                  </div>
+                  <div class="program program-7">
+                    <div class="program-bar">청년 고용안정 장려금 (6월)</div>
+                  </div>
+                  <div class="program program-8">
+                    <div class="program-bar">
+                      청년 전용 보증부 월세 대출 (5월)
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 월별 카드 상세 리스트 (새로운 섹션) -->
+              <div class="container" style="max-width: none; padding: 24px">
+                <!-- 섹션 헤더 -->
+                <div class="section-header">
+                  <div class="title-group">
+                    <h1 class="section-title">2025 월간 타임라인</h1>
+                    <p class="section-description">
+                      월별 주요 정책 모집 일정을 한눈에 확인하세요.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- 2025.01 (1월 정책 시작: 10건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.01 (상시/모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 1. 인공지능대학원 지원 (교육, 상시) -->
+                    <div class="timeline-card" data-id="1">
+                      <div class="card-left">
+                        <div class="card-icon icon-teal">
+                          <i class="ph ph-graduation-cap"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-education">
+                            교육/장학
+                          </div>
+                          <h3 class="card-title">인공지능대학원 지원</h3>
+                          <p class="card-description">
+                            AI 분야 석/박사급 고급 인재 양성을 위한 대학원 운영
+                            지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2028.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 2. 정보보호 특성화 대학 지원 (교육, 상시) -->
+                    <div class="timeline-card" data-id="2">
+                      <div class="card-left">
+                        <div class="card-icon icon-teal">
+                          <i class="ph ph-laptop"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-education">
+                            교육/장학
+                          </div>
+                          <h3 class="card-title">정보보호 특성화 대학 지원</h3>
+                          <p class="card-description">
+                            디지털 전환 대비, 우리 지역 AI 기반 정보보호 인재
+                            양성 지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2028.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 3. 청년 1인가구 사회적관계망 형성지원 (복지, 상시) -->
+                    <div class="timeline-card" data-id="3">
+                      <div class="card-left">
+                        <div class="card-icon icon-rose">
+                          <i class="ph ph-users"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-welfare">
+                            생활/복지
+                          </div>
+                          <h3 class="card-title">
+                            청년 1인가구 사회적관계망 형성지원
+                          </h3>
+                          <p class="card-description">
+                            가족센터를 중심으로 청년 1인가구의 고독, 고립 등
+                            방지를 위한 사회적 관계망 지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 4. 학교 밖 청소년 온라인 지원 강화 (복지, 상시) -->
+                    <div class="timeline-card" data-id="4">
+                      <div class="card-left">
+                        <div class="card-icon icon-rose">
+                          <i class="ph ph-devices"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-welfare">
+                            생활/복지
+                          </div>
+                          <h3 class="card-title">
+                            학교 밖 청소년 온라인 지원 강화
+                          </h3>
+                          <p class="card-description">
+                            학교 밖 청소년 대상 온라인 콘텐츠 및 프로그램 개발
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 5. 창업준비자금 (근로자생활안정자금) (주거/금융, 상시) -->
+                    <div class="timeline-card" data-id="5">
+                      <div class="card-left">
+                        <div class="card-icon icon-orange">
+                          <i class="ph ph-lightbulb"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-housing">
+                            주거/금융
+                          </div>
+                          <h3 class="card-title">
+                            창업준비자금 (근로자생활안정자금)
+                          </h3>
+                          <p class="card-description">
+                            창업 등 근로자 생활안정자금 융자 지원 (최대
+                            2,000만원)
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 6. 2025년 청년간호사 근속장려금 지원 (취업, 상시) -->
+                    <div class="timeline-card" data-id="6">
+                      <div class="card-left">
+                        <div class="card-icon icon-indigo">
+                          <i class="ph ph-first-aid-kit"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-employment">
+                            취업/진로
+                          </div>
+                          <h3 class="card-title">
+                            2025년 청년간호사 근속장려금 지원
+                          </h3>
+                          <p class="card-description">
+                            3년 또는 5년 만기 적립 시, 최대 2,520만원 또는
+                            5,400만원 적립 지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 7. 청년 우대형 주택청약종합저축 (주거/금융, 상시) -->
+                    <div class="timeline-card" data-id="7">
+                      <div class="card-left">
+                        <div class="card-icon icon-orange">
+                          <i class="ph ph-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-housing">
+                            주거/금융
+                          </div>
+                          <h3 class="card-title">
+                            청년 우대형 주택청약종합저축
+                          </h3>
+                          <p class="card-description">
+                            주택 구입 및 전월세 보증금 마련 지원, 비과세 혜택
+                            제공.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 8. K-Digital Training (교육, 상시) -->
+                    <div class="timeline-card" data-id="8">
+                      <div class="card-left">
+                        <div class="card-icon icon-teal">
+                          <i class="ph ph-desktop"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-education">
+                            교육/장학
+                          </div>
+                          <h3 class="card-title">K-Digital Training</h3>
+                          <p class="card-description">
+                            디지털 신기술 핵심 실무 인재 양성 훈련 (전액
+                            국비지원)
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 9. 국민취업지원제도 (취업, 상시) -->
+                    <div class="timeline-card" data-id="9">
+                      <div class="card-left">
+                        <div class="card-icon icon-indigo">
+                          <i class="ph ph-briefcase"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-employment">
+                            취업/진로
+                          </div>
+                          <h3 class="card-title">국민취업지원제도</h3>
+                          <p class="card-description">
+                            취업을 원하는 청년에게 취업지원서비스와 생계지원을
+                            제공
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 10. ICT 학점연계 인턴십 (교육/취업, 기간 한정) -->
+                    <div class="timeline-card" data-id="16">
+                      <div class="card-left">
+                        <div class="card-icon icon-purple2">
+                          <i class="ph ph-book-open"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-education">
+                            교육/진로
+                          </div>
+                          <h3 class="card-title">ICT 학점연계 인턴십</h3>
+                          <p class="card-description">
+                            ICT 기업 인턴십 및 학점 인정 (상반기 1~2월 모집)
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.01.15 ~ 2025.02.28</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2025.02 (2월 정책 시작: 2건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.02 (모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 11. 청년 주거급여 수급자 자립지원금 (복지, 기간 한정) -->
+                    <div class="timeline-card" data-id="10">
+                      <div class="card-left">
+                        <div class="card-icon icon-red">
+                          <i class="ph ph-credit-card"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-welfare">
+                            생활/복지
+                          </div>
+                          <h3 class="card-title">
+                            청년 주거급여 수급자 자립지원금
+                          </h3>
+                          <p class="card-description">
+                            만 19세~30세 미혼 청년 주거급여 수급자에게 별도
+                            지원금 지급
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.02.10 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 12. 청년 주택드림 청약통장 (주거, 상시) -->
+                    <div class="timeline-card" data-id="17">
+                      <div class="card-left">
+                        <div class="card-icon icon-orange">
+                          <i class="ph ph-house-line"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-housing">
+                            주거/금융
+                          </div>
+                          <h3 class="card-title">청년 주택드림 청약통장</h3>
+                          <p class="card-description">
+                            청년의 자산 형성과 내 집 마련을 지원하는 청약 통장
+                            (금리 혜택)
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.02.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2025.03 (3월 정책 시작: 2건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.03 (모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 13. 청년내일저축계좌 (복지, 기간 한정) -->
+                    <div class="timeline-card" data-id="11">
+                      <div class="card-left">
+                        <div class="card-icon icon-red">
+                          <i class="ph ph-piggy-bank"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-welfare">
+                            생활/복지
+                          </div>
+                          <h3 class="card-title">청년내일저축계좌</h3>
+                          <p class="card-description">
+                            기준 중위소득 100% 이하 청년 대상, 근로소득 장려금
+                            지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.03.01 ~ 2025.03.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 14. 청년도전지원사업 (취업, 기간 한정) -->
+                    <div class="timeline-card" data-id="15">
+                      <div class="card-left">
+                        <div class="card-icon icon-indigo">
+                          <i class="ph ph-trend-up"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-employment">
+                            취업/진로
+                          </div>
+                          <h3 class="card-title">청년도전지원사업</h3>
+                          <p class="card-description">
+                            구직단념 청년들의 구직 의욕 고취 및 자신감 강화 지원
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.03.01 ~ 2025.11.30</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2025.04 (4월 정책 시작: 1건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.04 (모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 15. 주거안정 월세 대출 (주거/금융, 기간 한정) -->
+                    <div class="timeline-card" data-id="12">
+                      <div class="card-left">
+                        <div class="card-icon icon-orange">
+                          <i class="ph ph-money"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-housing">
+                            주거/금융
+                          </div>
+                          <h3 class="card-title">주거안정 월세 대출</h3>
+                          <p class="card-description">
+                            주거 안정을 위한 월세 자금 대출 지원 (최대
+                            1,200만원)
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.04.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2025.05 (5월 정책 시작: 1건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.05 (모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 16. 청년전용 보증부 월세 대출 (주거/금융, 기간 한정) -->
+                    <div class="timeline-card" data-id="13">
+                      <div class="card-left">
+                        <div class="card-icon icon-orange">
+                          <i class="ph ph-key"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-housing">
+                            주거/금융
+                          </div>
+                          <h3 class="card-title">청년전용 보증부 월세 대출</h3>
+                          <p class="card-description">
+                            보증금 최대 4,500만원, 월세금 최대 1,200만원 대출
+                            지원.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.05.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 2025.06 (6월 정책 시작: 1건) -->
+                <div class="month-container">
+                  <h2 class="month-title">2025.06 (모집 시작)</h2>
+                  <div class="timeline-cards">
+                    <!-- 17. 청년 고용안정 장려금 지원 (취업, 기간 한정) -->
+                    <div class="timeline-card" data-id="14">
+                      <div class="card-left">
+                        <div class="card-icon icon-indigo">
+                          <i class="ph ph-chart-line-up"></i>
+                        </div>
+                        <div class="card-content">
+                          <div class="card-category category-employment">
+                            취업/진로
+                          </div>
+                          <h3 class="card-title">청년 고용안정 장려금 지원</h3>
+                          <p class="card-description">
+                            중소·중견 기업에서 정규직으로 채용된 청년에게 최대
+                            3년간 지원금 지급.
+                          </p>
+                        </div>
+                      </div>
+                      <div class="card-right">
+                        <div class="card-period">
+                          <div class="period-label">Period</div>
+                          <div class="period-date">2025.06.01 ~ 2025.12.31</div>
+                        </div>
+                        <div class="card-arrow">
+                          <i class="ph ph-arrow-right"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 이후 7월~12월은 현재 데이터에 모집 시작 정책이 없어 생략 -->
+              </div>
+            </section>
+          </section>
+        </main>
+      </section>
+
+      <!-- ================================================= -->
+      <!-- SECTION 4: 주요 일정 (SCHEDULE MOVED TO BOTTOM) -->
+      <!-- ================================================= -->
+      <section class="schedule-wrapper">
+        <section class="schedule-container">
+          <div class="schedule-info">
+            <div class="schedule-label">
+              <i class="ph ph-calendar-check"></i> SCHEDULE
+            </div>
+            <h2 class="schedule-title">주요 일정<br />한눈에 확인하기</h2>
+            <p class="schedule-desc">
+              신청 마감일과 주요 행사 일정을<br />미리 체크하고 준비하세요.
+            </p>
+            <button class="btn-schedule" id="scheduleViewAll">
+              전체 일정 보기 <i class="ph ph-arrow-right"></i>
+            </button>
+          </div>
+
+          <div class="schedule-list">
+            <div class="schedule-item">
+              <div class="date-box">
+                <span class="date-day">WED</span>
+                <span class="date-num">12</span>
+              </div>
+              <div class="item-content">
+                <div class="item-title">취업지원 설명회</div>
+                <div class="item-sub">온라인 Zoom 진행</div>
+              </div>
+              <div class="item-action"><i class="ph ph-caret-right"></i></div>
+            </div>
+
+            <div class="schedule-item active">
+              <div class="date-box">
+                <span class="date-day">SAT</span>
+                <span class="date-num">15</span>
+              </div>
+              <div class="item-content">
+                <div class="item-title">구직활동지원금 마감</div>
+                <div class="item-sub">18:00 서류 마감</div>
+              </div>
+              <div class="item-action">
+                <i class="ph ph-check-circle" style="font-size: 20px"></i>
+              </div>
+            </div>
+
+            <div class="schedule-item">
+              <div class="date-box">
+                <span class="date-day">TUE</span>
+                <span class="date-num">18</span>
+              </div>
+              <div class="item-content">
+                <div class="item-title">청년면접수당 신청</div>
+                <div class="item-sub">경기도일자리재단</div>
+              </div>
+              <div class="item-action"><i class="ph ph-caret-right"></i></div>
+            </div>
+
+            <div class="schedule-item">
+              <div class="date-box">
+                <span class="date-day">MON</span>
+                <span class="date-num">24</span>
+              </div>
+              <div class="item-content">
+                <div class="item-title">K-Digital Training</div>
+                <div class="item-sub">5기 훈련생 모집 시작</div>
+              </div>
+              <div class="item-action"><i class="ph ph-caret-right"></i></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <!-- === 상세 설명 모달 영역 === -->
+    <div id="policyModal" class="modal-overlay">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <div>
+            <div class="modal-tags">
+              <!-- Tags will be dynamically inserted here -->
+            </div>
+            <h3 class="modal-title" id="modalTitle"></h3>
+          </div>
+          <button class="btn-close-modal" onclick="closeModal()">
+            <i class="ph ph-x" style="font-size: 24px"></i>
+          </button>
+        </div>
+        <!-- Modal Body -->
+        <div class="modal-body">
+          <!-- 1. 지원 대상 및 자격 -->
+          <div class="modal-item">
+            <div class="modal-icon-box purple">
+              <i class="ph ph-user"></i>
+            </div>
+            <div>
+              <div class="modal-item-label">지원 대상 및 자격</div>
+              <div class="modal-item-value" id="modalTarget"></div>
+            </div>
+          </div>
+          <!-- 2. 신청 기간 -->
+          <div class="modal-item">
+            <div class="modal-icon-box orange">
+              <i class="ph ph-calendar-check"></i>
+            </div>
+            <div>
+              <div class="modal-item-label">신청 기간</div>
+              <div class="modal-item-value" id="modalPeriod"></div>
+            </div>
+          </div>
+          <!-- 3. 지원 내용 -->
+          <div class="modal-item">
+            <div class="modal-icon-box blue">
+              <i class="ph ph-gift"></i>
+            </div>
+            <div>
+              <div class="modal-item-label">지원 내용</div>
+              <div class="modal-item-value" id="modalDescription"></div>
+            </div>
+          </div>
+          <!-- 4. 주관 부서 -->
+          <div class="modal-item">
+            <div class="modal-icon-box purple">
+              <i class="ph ph-buildings"></i>
+            </div>
+            <div>
+              <div class="modal-item-label">주관 기관</div>
+              <div class="modal-item-value" id="modalOrganization"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button class="btn-close-modal" onclick="closeModal()">닫기</button>
+          <a
+            id="modalDetailLink"
+            href="#"
+            target="_blank"
+            class="btn-detail-link"
+            style="display: none"
+          >
+            자세히 보기 <i class="ph ph-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================= -->
+    <!-- FOOTER (REFINED) -->
+    <!-- ================================================= -->
+    <footer class="main-footer">
+      <div class="footer-content">
+        <!-- 로고 및 브랜드 이름 (첫 번째 섹션의 스타일 재활용) -->
+        <div class="brand-row footer-brand">
+          <div class="brand-icon footer-icon-lg"></div>
+          <span class="brand-text footer-text-lg">청년지원플랫폼</span>
+        </div>
+
+        <div class="footer-bottom">
+          <p class="copyright">
+            © 2025 Youth Support Platform. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // 정책 데이터 (CSV 파일 기반으로 통합)
+      const policyData = [
+        // 1: 인공지능대학원 지원
+        {
+          id: "1",
+          category: "교육/장학",
+          status: "상시모집",
+          title: "인공지능대학원 지원",
+          target: "AI 대학원생 및 학부생 (무제한 연령)",
+          period: "2025.01.01 ~ 2028.12.31",
+          desc: "AI 분야 석·박사과정 지원. 광주 인공지능 산업융합 집적단지에 필요한 고급인재 양성으로 국가 경쟁력 향상 및 미래 일자리 창출 기반 마련. (지원규모: 0)",
+          org: "AI반도체과",
+          url: "#",
+        },
+        // 2: 정보보호 특성화 대학 지원
+        {
+          id: "2",
+          category: "교육/장학",
+          status: "상시모집",
+          title: "정보보호 특성화 대학 지원",
+          target: "대학재학생 (20~30대)",
+          period: "2025.01.01 ~ 2028.12.31",
+          desc: "디지털전환 대비, 우리지역 AI기반 정보보호 인재양성 (지원규모: 0)",
+          org: "AI반도체과",
+          url: "#",
+        },
+        // 3: 청년 1인가구 사회적관계망 형성지원
+        {
+          id: "3",
+          category: "생활/복지",
+          status: "상시모집",
+          title: "청년 1인가구 사회적관계망 형성지원",
+          target: "청년 (연령/학력 제한 없음)",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "가족센터를 중심으로 청년 1인가구의 고독, 고립 등 방지를 위한 사회적 관계망 지원 (지원규모: 0)",
+          org: "가족정책과",
+          url: "#",
+        },
+        // 4: 학교 밖 청소년 온라인 지원 강화
+        {
+          id: "4",
+          category: "생활/복지",
+          status: "상시모집",
+          title: "학교 밖 청소년 온라인 지원 강화",
+          target: "학교 밖 청소년 (9~24세)",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "학교 밖 청소년 대상 온라인 콘텐츠 및 프로그램 개발 및 보급, 메타버스 기반 꿈드림ON운영 및 서비스 제공 (지원규모: -)",
+          org: "여성가족부",
+          url: "#",
+        },
+        // 5: 창업준비자금 (근로자생활안정자금)
+        {
+          id: "5",
+          category: "주거/금융",
+          status: "상시모집",
+          title: "창업준비자금 (근로자생활안정자금)",
+          target: "만 25세 이상 근로자 또는 창업 예정자",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "창업 등 근로자 생활안정자금 융자 지원 (최대 2,000만원, 이율 연 1.5%)\n- 근로자신용보증지원제도 이용 (신용보증료 연 0.9% 별도 부담)",
+          org: "근로복지공단",
+          url: "#",
+        },
+        // 6: 2025년 청년간호사 근속장려금 지원
+        {
+          id: "6",
+          category: "취업/진로",
+          status: "상시모집",
+          title: "2025년 청년간호사 근속장려금 지원",
+          target: "지역 의료기관 재직 간호사 (재직자 한정)",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "3년 또는 5년 만기 적립 시, 최대 2,520만원 또는 5,400만원 적립 지원 (도/의료원/본인 분담)",
+          org: "보건복지부",
+          url: "#",
+        },
+        // 7: 청년 우대형 주택청약종합저축
+        {
+          id: "7",
+          category: "주거/금융",
+          status: "상시모집",
+          title: "청년 우대형 주택청약종합저축",
+          target: "만 19세~34세, 연소득 3,600만원 이하 무주택 세대주",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "기존 주택청약종합저축의 기능을 유지하면서 우대금리 및 비과세 혜택 제공",
+          org: "국토교통부",
+          url: "#",
+        },
+        // 8: K-Digital Training
+        {
+          id: "8",
+          category: "교육/장학",
+          status: "상시모집",
+          title: "K-Digital Training",
+          target: "만 18세 이상 실업자, 재직자, 대학생 등",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "디지털 신기술 핵심 실무 인재 양성 훈련 (전액 국비지원, 훈련 장려금 지급)",
+          org: "고용노동부",
+          url: "#",
+        },
+        // 9: 국민취업지원제도
+        {
+          id: "9",
+          category: "취업/진로",
+          status: "상시모집",
+          title: "국민취업지원제도",
+          target: "취업을 원하는 청년 (만 18세~34세)",
+          period: "2025.01.01 ~ 2025.12.31",
+          desc: "취업지원서비스와 생계지원 (구직촉진수당) 제공",
+          org: "고용노동부",
+          url: "#",
+        },
+        // 10: 청년 주거급여 수급자 자립지원금
+        {
+          id: "10",
+          category: "생활/복지",
+          status: "기간한정",
+          title: "청년 주거급여 수급자 자립지원금",
+          target: "만 19세~30세 미혼 청년 주거급여 수급자",
+          period: "2025.02.10 ~ 2025.12.31",
+          desc: "부모와 따로 거주하는 주거급여 수급 청년에게 별도 지원금 지급",
+          org: "국토교통부",
+          url: "#",
+        },
+        // 11: 청년내일저축계좌
+        {
+          id: "11",
+          category: "생활/복지",
+          status: "기간한정",
+          title: "청년내일저축계좌",
+          target: "기준 중위소득 100% 이하 청년 (만 19세~34세)",
+          period: "2025.03.01 ~ 2025.03.31",
+          desc: "근로소득 장려금 지원 (본인 저축액에 정부 지원금 매칭, 최대 1,440만원)",
+          org: "보건복지부",
+          url: "#",
+        },
+        // 12: 주거안정 월세 대출
+        {
+          id: "12",
+          category: "주거/금융",
+          status: "기간한정",
+          title: "주거안정 월세 대출",
+          target:
+            "주택도시기금 청년버팀목전세자금대출 대상자 또는 무주택 세대주",
+          period: "2025.04.01 ~ 2025.12.31",
+          desc: "주거 안정을 위한 월세 자금 대출 지원 (최대 1,200만원, 이율 1.0~2.0%)",
+          org: "주택도시기금",
+          url: "#",
+        },
+        // 13: 청년전용 보증부 월세 대출
+        {
+          id: "13",
+          category: "주거/금융",
+          status: "기간한정",
+          title: "청년전용 보증부 월세 대출",
+          target:
+            "만 19세~34세, 임차보증금 1억 이하, 월세 70만원 이하 주택 임차 계약자",
+          period: "2025.05.01 ~ 2025.12.31",
+          desc: "보증금 최대 4,500만원, 월세금 최대 1,200만원 대출 지원",
+          org: "주택도시기금",
+          url: "#",
+        },
+        // 14: 청년 고용안정 장려금 지원
+        {
+          id: "14",
+          category: "취업/진로",
+          status: "기간한정",
+          title: "청년 고용안정 장려금 지원",
+          target: "중소·중견 기업에서 정규직으로 채용된 청년",
+          period: "2025.06.01 ~ 2025.12.31",
+          desc: "청년의 장기 재직 유도를 위해 최대 3년간 지원금 지급",
+          org: "고용노동부",
+          url: "#",
+        },
+        // 15: 청년도전지원사업
+        {
+          id: "15",
+          category: "취업/진로",
+          status: "마감임박",
+          title: "청년도전지원사업",
+          target: "구직단념 청년 (만 18세~34세)",
+          period: "2025.03.01 ~ 2025.11.30",
+          desc: "구직 의욕 고취 및 자신감 강화를 위한 프로그램 제공 및 참여수당 지급",
+          org: "고용노동부",
+          url: "#",
+        },
+        // 16: ICT 학점연계 인턴십
+        {
+          id: "16",
+          category: "교육/장학",
+          status: "모집종료",
+          title: "ICT 학점연계 인턴십",
+          target: "ICT 분야 전공 대학생",
+          period: "2025.01.15 ~ 2025.02.28",
+          desc: "ICT 기업 인턴십 및 학점 인정 (상반기 모집 기간 종료)",
+          org: "과학기술정보통신부",
+          url: "#",
+        },
+        // 17: 청년 주택드림 청약통장 (ID 중복 피하기 위해 추가)
+        {
+          id: "17",
+          category: "주거/금융",
+          status: "상시모집",
+          title: "청년 주택드림 청약통장",
+          target: "만 19세~34세, 연소득 3,500만원 이하 무주택자",
+          period: "2025.02.01 ~ 2025.12.31",
+          desc: "청년의 자산 형성과 내 집 마련을 지원하는 청약 통장. 이자율 및 대출 연계 혜택 제공.",
+          org: "국토교통부",
+          url: "#",
+        },
+      ];
+
+      // 정책 데이터에서 ID를 기준으로 객체를 찾는 함수
+      function getPolicyById(id) {
+        return policyData.find((policy) => policy.id === id);
+      }
+
+      // 모달 열기 함수
+      function openModal(policy) {
+        if (!policy) return;
+
+        // 모달 요소 참조
+        const modal = document.getElementById("policyModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalTags = modal.querySelector(".modal-tags");
+        const modalTarget = document.getElementById("modalTarget");
+        const modalPeriod = document.getElementById("modalPeriod");
+        const modalDescription = document.getElementById("modalDescription");
+        const modalOrganization = document.getElementById("modalOrganization");
+        const modalDetailLink = document.getElementById("modalDetailLink");
+
+        // 1. Title 및 Tags 업데이트
+        modalTitle.textContent = policy.title;
+        modalTags.innerHTML = ""; // 기존 태그 초기화
+
+        // 카테고리 태그
+        const categoryTag = document.createElement("span");
+        // 태그 색상 결정을 위한 임시 로직 (기존 CSS 클래스 활용)
+        const categoryClass = policy.category.includes("교육")
+          ? "ing"
+          : policy.category.includes("주거") || policy.category.includes("금융")
+          ? "d-day"
+          : "always";
+        categoryTag.className = "tag " + categoryClass;
+        categoryTag.textContent = policy.category;
+        modalTags.appendChild(categoryTag);
+
+        // 상태 태그
+        const statusTag = document.createElement("span");
+        // 태그 색상 결정을 위한 임시 로직 (기존 CSS 클래스 활용)
+        const statusClass = policy.status.includes("상시")
+          ? "always"
+          : policy.status.includes("마감임박")
+          ? "d-day"
+          : "ing";
+        statusTag.className = "tag " + statusClass;
+        statusTag.textContent = policy.status;
+        modalTags.appendChild(statusTag);
+
+        // 2. Body 내용 업데이트
+        modalTarget.textContent = policy.target;
+        modalPeriod.textContent = policy.period;
+        modalDescription.textContent = policy.desc;
+        modalOrganization.textContent = policy.org;
+
+        // 3. Footer 링크 업데이트
+        if (policy.url && policy.url !== "#") {
+          modalDetailLink.href = policy.url;
+          modalDetailLink.style.display = "inline-flex";
+        } else {
+          modalDetailLink.href = "#";
+          modalDetailLink.style.display = "none";
+        }
+
+        // 4. 모달 표시
+        modal.classList.add("active");
+      }
+
+      // 모달 닫기 함수 (전역)
+      function closeModal() {
+        document.getElementById("policyModal").classList.remove("active");
+      }
+
+      // 가로 스크롤 버튼 동작 구현 (전역 함수)
+      function scrollCards(direction) {
+        const container = document.getElementById("cardScroll");
+        // 스크롤 카드 너비 + 간격 (320px + 20px)
+        const scrollAmount = 340;
+
+        if (container) {
+          if (direction === "left") {
+            container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+          } else {
+            container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+          }
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const dashboardSection = document.querySelector(".dashboard-section");
+
+        // 새로 추가된 필터 및 카테고리 요소 참조
+        const filterSection = document.querySelector(".filter-section");
+        const categoryNav = document.querySelector(".category-nav");
+
+        // 정책 카드 전체 개수 업데이트 함수
+        function updatePolicyCount(count) {
+          document.getElementById("policyCount").textContent = `${count}건`;
+        }
+
+        // 총 정책 카드의 개수 계산
+        const totalPolicyCount =
+          document.querySelectorAll(".policy-card").length;
+        updatePolicyCount(totalPolicyCount);
+
+        // --- Policy Filtering Logic ---
+        function filterAllPolicies() {
+          // 1. 현재 활성화된 필터 값 수집
+          const activeFilters = {
+            category:
+              document.querySelector(".category-item.active")?.dataset
+                .category || "all",
+            year:
+              document.querySelector(
+                '.filter-row[data-filter-group="year"] .filter-pill.active'
+              )?.dataset.filter || "all",
+            status:
+              document.querySelector(
+                '.filter-row[data-filter-group="status"] .filter-pill.active'
+              )?.dataset.filter || "all",
+            duration:
+              document.querySelector(
+                '.filter-row[data-filter-group="duration"] .filter-pill.active'
+              )?.dataset.filter || "all",
+          };
+
+          let visibleCount = 0;
+          const policyCards = document.querySelectorAll(".policy-card");
+
+          policyCards.forEach((card) => {
+            const cardData = card.dataset;
+
+            // 모든 조건 검사: 'all'이거나 데이터가 필터 값과 일치해야 합니다.
+            const matchesCategory =
+              activeFilters.category === "all" ||
+              cardData.category === activeFilters.category;
+            const matchesYear =
+              activeFilters.year === "all" ||
+              cardData.year === activeFilters.year;
+            const matchesStatus =
+              activeFilters.status === "all" ||
+              cardData.status === activeFilters.status;
+            const matchesDuration =
+              activeFilters.duration === "all" ||
+              cardData.duration === activeFilters.duration;
+
+            if (
+              matchesCategory &&
+              matchesYear &&
+              matchesStatus &&
+              matchesDuration
+            ) {
+              card.style.display = "flex";
+              visibleCount++;
+            } else {
+              card.style.display = "none";
+            }
+          });
+
+          updatePolicyCount(visibleCount); // 필터링 후 개수 업데이트
+        }
+
+        // --- Modal Event Setup ---
+        // 그리드 뷰, 타임라인, 최신 업데이트 카드에 클릭 이벤트 리스너 추가
+        // .update-card를 추가하여 클릭 이벤트 영역을 확장합니다.
+        document
+          .querySelectorAll(".policy-card, .timeline-card, .update-card")
+          .forEach((card) => {
+            // data-id가 없는 카드(주석 또는 불필요한 마크업) 제외
+            if (card.dataset.id) {
+              card.addEventListener("click", function (event) {
+                event.stopPropagation(); // 중복 클릭 방지
+                const id = this.dataset.id;
+                const policy = getPolicyById(id);
+                if (policy) {
+                  openModal(policy);
+                } else {
+                  console.error("Policy not found for ID:", id);
+                }
+              });
+            }
+          });
+
+        // 모달 외부 클릭 시 닫기
+        document
+          .getElementById("policyModal")
+          .addEventListener("click", closeModal);
+
+        // --- View Toggle Logic (Grid/Timeline) ---
+        function toggleView(viewType) {
+          const gridView = document.getElementById("gridView");
+          const timelineView = document.getElementById("timelineView");
+
+          // 뷰 전환 시 필터 버튼 비활성화 (UX 개선)
+          const filterPills = document.querySelectorAll(
+            ".filter-section .filter-pill"
+          );
+          const categoryItems = document.querySelectorAll(
+            ".category-nav .category-item"
+          );
+
+          if (viewType === "grid") {
+            // 1. Sidebar/Layout: 그리드 뷰 (사이드바 표시, 2열 레이아웃)
+            dashboardSection.classList.remove("timeline-active");
+
+            // 2. 필터 섹션 표시
+            filterSection.style.display = "block";
+            categoryNav.style.display = "flex";
+
+            // 3. View: Grid 보이기, Timeline 숨기기
+            gridView.style.display = "grid";
+            timelineView.style.display = "none";
+
+            // 4. Filter: 필터 활성화
+            filterPills.forEach((p) => (p.disabled = false));
+            categoryItems.forEach((c) => (c.style.pointerEvents = "auto"));
+
+            // 5. 필터링 다시 적용 (그리드 뷰 복귀 시)
+            filterAllPolicies();
+          } else if (viewType === "timeline") {
+            // 1. Sidebar/Layout: 타임라인 뷰 (사이드바 숨기기, 메인 콘텐츠 전체 너비)
+            dashboardSection.classList.add("timeline-active");
+
+            // 2. 필터 섹션 숨기기
+            filterSection.style.display = "none";
+            categoryNav.style.display = "none";
+
+            // 3. View: Timeline 보이기, Grid 숨기기
+            gridView.style.display = "none";
+            timelineView.style.display = "block";
+
+            // 4. Filter: 필터 비활성화 (타임라인은 전체를 보여주므로)
+            filterPills.forEach((p) => (p.disabled = true));
+            categoryItems.forEach((c) => (c.style.pointerEvents = "none")); // 카테고리 nav 클릭 막기
+
+            // 5. 정책 개수 고정 (타임라인은 전체 정책을 보여주므로)
+            updatePolicyCount(totalPolicyCount);
+          }
+        }
+
+        // 1. 필터 알약 버튼 클릭 인터랙션 (단일 선택 및 필터링 적용)
+        const filterPills = document.querySelectorAll(".filter-pill");
+        filterPills.forEach((pill) => {
+          pill.addEventListener("click", function () {
+            // 동일 그룹 내 active 클래스 토글
+            const siblings = this.parentElement.children;
+            for (let sibling of siblings) {
+              sibling.classList.remove("active");
+            }
+            this.classList.add("active");
+
+            // 그리드 뷰일 경우에만 필터링 적용
+            const activeView = document.querySelector(
+              "#viewToggleButtons button.active"
+            )?.dataset.view;
+            if (activeView === "grid") {
+              filterAllPolicies();
+            }
+          });
+        });
+
+        // 2. 카테고리 네비게이션 클릭 인터랙션 (필터링 기능 적용)
+        const categoryItems = document.querySelectorAll(".category-item");
+        categoryItems.forEach((item) => {
+          item.addEventListener("click", function () {
+            // 1. Active class toggle
+            categoryItems.forEach((i) => i.classList.remove("active"));
+            this.classList.add("active");
+
+            // 2. 그리드 뷰일 경우에만 필터링 적용
+            const activeView = document.querySelector(
+              "#viewToggleButtons button.active"
+            )?.dataset.view;
+            if (activeView === "grid") {
+              filterAllPolicies();
+            }
+          });
+        });
+
+        // 3. 카드 하트(찜하기) 버튼 토글 인터랙션
+        const heartButtons = document.querySelectorAll(".btn-heart");
+        heartButtons.forEach((btn) => {
+          btn.addEventListener("click", function (event) {
+            // 클릭 이벤트가 부모 카드까지 전파되는 것을 방지
+            event.stopPropagation();
+            this.classList.toggle("active");
+            const icon = this.querySelector("i");
+            if (this.classList.contains("active")) {
+              icon.classList.remove("ph-heart-straight");
+              icon.classList.add("ph-heart-straight-fill");
+            } else {
+              icon.classList.remove("ph-heart-straight-fill");
+              icon.classList.add("ph-heart-straight");
+            }
+          });
+        });
+
+        // 4. 일정 리스트 클릭 시 active 변경
+        const scheduleItems = document.querySelectorAll(".schedule-item");
+        scheduleItems.forEach((item) => {
+          item.addEventListener("click", () => {
+            scheduleItems.forEach((i) => i.classList.remove("active"));
+            item.classList.add("active");
+          });
+        });
+
+        // 5. Grid / Timeline 뷰 토글 버튼 리스너
+        const viewToggleButtons = document.querySelectorAll(
+          "#viewToggleButtons button"
+        );
+        viewToggleButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            viewToggleButtons.forEach((btn) => btn.classList.remove("active"));
+            this.classList.add("active");
+            const viewType = this.dataset.view;
+            toggleView(viewType);
+          });
+        });
+
+        // 6. '전체 일정 보기' 버튼 클릭 리스너 (요청 사항)
+        const scheduleViewAllButton =
+          document.getElementById("scheduleViewAll");
+        const timelineToggleButton = document.querySelector(
+          '#viewToggleButtons button[data-view="timeline"]'
+        );
+
+        if (scheduleViewAllButton && timelineToggleButton) {
+          scheduleViewAllButton.addEventListener("click", function () {
+            // 1. 타임라인 보기 버튼 클릭을 시뮬레이션하여 뷰 전환 및 버튼 상태 업데이트
+            timelineToggleButton.click();
+
+            // 2. 대시보드 섹션으로 부드럽게 스크롤
+            const dashboardSection =
+              document.getElementById("dashboardSection");
+            if (dashboardSection) {
+              dashboardSection.scrollIntoView({ behavior: "smooth" });
+            }
+          });
+        }
+
+        // 초기 로딩 시 전체 필터링 적용 및 개수 설정 (기본은 Grid View)
+        filterAllPolicies();
+      });
+    </script>
+  </body>
+</html>
